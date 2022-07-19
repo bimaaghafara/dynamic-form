@@ -1,19 +1,22 @@
 import { TextField } from "@mui/material";
 
-export type DynamicFormProps = {
+export type Form = {
   fieldName: string;
   type: string;
   value?: string | number;
   options?: any[];
-  handleChange?: (e: any) => void 
 }
 
-const DynamicForm = ({
+export type DynamicFormProps = Form & {
+  onChange?: (e: any) => void 
+}
+
+export const DynamicForm = ({
   fieldName,
   type,
   value,
   options,
-  handleChange = () => {}
+  onChange = () => {}
 }: DynamicFormProps) => {
 
   const getLabel = () => {
@@ -27,7 +30,7 @@ const DynamicForm = ({
       label={getLabel()}
       value={value}
       type={type}
-      onChange={handleChange}
+      onChange={onChange}
     />
   );
 
