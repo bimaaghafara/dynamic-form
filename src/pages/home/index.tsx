@@ -6,11 +6,11 @@ import { useFormik } from 'formik';
 
 // components & styles
 import { Styles as sx } from './styles';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Form, DynamicForm } from 'src/components/dynamic-form';
 
 const Home = () => {
-  const [data, setData] = useState<Form[]>([]);
+  const [data, setData] = useState<Form[]>();
   const [error, setError] = useState();
 
   const formik = useFormik<
@@ -39,10 +39,10 @@ const Home = () => {
       })
   }, []);
 
-  if (error) return <>Error!</>;
-  if (!data) return <>Loading...</>;
-  return (
-    <Box sx={sx.root}>
+  const renderContent = () => {
+    if (error) return <Box sx={sx.field}>Error!</Box>;
+    if (!data) return <Box sx={sx.field}>Loading . . .</Box>;
+    return <>
       {data?.map?.((e, i) => (
         <Box sx={sx.field} key={i}>
           <DynamicForm
@@ -52,6 +52,15 @@ const Home = () => {
           />
         </Box>
       ))}
+    </>
+  }
+
+  return (
+    <Box sx={sx.root}>
+      <Typography variant="h5">
+        Dynamic Form
+      </Typography>
+      {renderContent()}
     </Box>
   )
 }

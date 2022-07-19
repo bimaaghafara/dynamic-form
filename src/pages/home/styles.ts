@@ -5,6 +5,10 @@ export const Styles = SxObject({
     padding: '24px'
   },
   field: {
-    margin: '24px 0'
+    margin: '24px 0',
+    '& > .MuiTextField-root': {
+      width: '360px',
+      maxWidth: '100%',
+    }
   }
 });
