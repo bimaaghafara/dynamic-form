@@ -21,11 +21,12 @@ const DynamicForm = ({
     return label.charAt(0).toUpperCase() + label.slice(1);
   }
 
-  if (type === 'text' || type === 'email') return (
+  if (['text', 'email', 'number'].includes(type)) return (
     <TextField
       id={fieldName}
       label={getLabel()}
       value={value}
+      type={type}
       onChange={handleChange}
     />
   );
