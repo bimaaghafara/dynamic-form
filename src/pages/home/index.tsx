@@ -6,10 +6,11 @@ import { useFormik } from 'formik';
 
 // components & styles
 import { Styles as sx } from './styles';
-import { Box, Typography, Snackbar, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { FormProps, DynamicForm } from 'src/components/dynamic-form';
+import Snackbar, { SnackbarProps } from 'src/components/snackbar';
 
 type FormValues = {
   [key: string]: string | number | undefined;
@@ -20,12 +21,6 @@ type FormValues = {
   age?: number;
   testimonial?: string;
 }
-
-type SnackbarProps = {
-  open?: boolean;
-  message?: string;
-  severity?: 'error' | 'info' | 'success' | 'warning';
-} | undefined;
 
 const Home = () => {
   const [snackbar, setSnackbar] = useState<SnackbarProps>();
@@ -117,25 +112,7 @@ const Home = () => {
         Dynamic Form
       </Typography>
       {renderContent()}
-
-      <Snackbar
-        open={snackbar?.open}
-        autoHideDuration={5000}
-        onClose={() => setSnackbar(undefined)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Box>
-          {snackbar?.open && (
-            <Alert
-              onClose={() => setSnackbar(undefined)}
-              severity={snackbar?.severity}
-              sx={{ width: '100%' }}
-            >
-              {snackbar?.message}
-            </Alert>
-          )}
-        </Box>
-      </Snackbar>
+      <Snackbar snackbar={snackbar} setSnackbar={setSnackbar} />
     </Box>
   )
 }
