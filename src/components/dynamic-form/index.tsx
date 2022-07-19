@@ -1,13 +1,13 @@
 import { TextField, MenuItem } from "@mui/material";
 
-export type Form = {
+export type FormProps = {
   fieldName: string;
   type: string;
   value?: string | number;
   options?: any[];
 }
 
-export type DynamicFormProps = Form & {
+export type DynamicFormProps = FormProps & {
   onChange?: (e: any) => void 
 }
 

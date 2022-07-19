@@ -7,31 +7,63 @@ import { useFormik } from 'formik';
 // components & styles
 import { Styles as sx } from './styles';
 import { Box, Typography } from '@mui/material';
-import { Form, DynamicForm } from 'src/components/dynamic-form';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SendIcon from '@mui/icons-material/Send';
+import { FormProps, DynamicForm } from 'src/components/dynamic-form';
+
+type FormValues = {
+  [key: string]: string | number | undefined;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  gender?: string;
+  age?: number;
+  testimonial?: string;
+}
 
 const Home = () => {
-  const [data, setData] = useState<Form[]>();
+  const [formsProps, setFormsProps] = useState<FormProps[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState();
 
-  const formik = useFormik<
-    {[key: string]: Form["value"]}
-  >({
-    initialValues: {},
-    onSubmit: () => {}
+  const onSubmit = (values: FormValues) => {
+    setIsLoading(true);
+    axios.post<{
+      data: FormValues,
+      message: string,
+      success: boolean
+    }>("https://ulventech-react-exam.netlify.app/api/form", values)
+      .then(res => {
+        setIsLoading(false);
+        console.log(res.data.data)
+      })
+      .catch(err => {
+        setIsLoading(false);
+        setError(err)
+      })
+  }
+
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      emailAddress: ''
+    },
+    onSubmit,
   })
 
   useEffect(() => {
     axios.get<{
-      data: Form[],
+      data: FormProps[],
       message: string,
       success: boolean
     }>('https://ulventech-react-exam.netlify.app/api/form')
       .then(res => {
-        setData(res.data.data)
+        setFormsProps(res.data.data)
         formik.setValues(
           res.data.data.reduce((acc, curr) => (
             {...acc, [curr.fieldName]: curr.value}
-          ), {})
+          ), formik.values)
         )
       })
       .catch( err => {
@@ -41,17 +73,26 @@ const Home = () => {
 
   const renderContent = () => {
     if (error) return <Box sx={sx.field}>Error!</Box>;
-    if (!data) return <Box sx={sx.field}>Loading . . .</Box>;
+    if (!formsProps) return <Box sx={sx.field}>Loading . . .</Box>;
     return <>
-      {data?.map?.((e, i) => (
+      {formsProps?.map?.((formProps, i) => (
         <Box sx={sx.field} key={i}>
           <DynamicForm
-            {...e}
-            value={formik.values[e.fieldName]}
+            {...formProps}
+            value={formik.values[formProps.fieldName]}
             onChange={formik.handleChange}
           />
         </Box>
       ))}
+      <LoadingButton
+          onClick={() => formik.handleSubmit()}
+          endIcon={<SendIcon />}
+          loading={isLoading}
+          loadingPosition="end"
+          variant="contained"
+        >
+          Submit
+        </LoadingButton>
     </>
   }
 
